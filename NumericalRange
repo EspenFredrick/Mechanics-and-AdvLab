@@ -1,0 +1,58 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Tue Sep 15 20:27:44 2019
+
+@author: espen
+"""
+import numpy as np
+import matplotlib.pyplot as plt
+
+g = 9.81 #Gravitational constant
+d = 0.0425 #Diameter in m (4.25cm )
+m = 0.0459 #Mass in kg (45.9g)
+V0 = 50 #50 m/s initial velocity
+k1 = -(1.55e-4*d)/m #k1 value
+k2 = (0.22*(d**2))/m #k2 value
+
+dt = 0.001 #Timestep
+theta = 0
+Xmax = 0
+
+flightTime = np.arange(0, 600, dt) #Create timeline
+
+X = np.zeros(len(flightTime)) #Array of zeros to increment through
+Y = np.zeros(len(flightTime))
+Vx = np.zeros(len(flightTime))
+Vy = np.zeros(len(flightTime))
+
+MaxX = [] #Array to add the max range for each angle to
+Angle = [] #Array for all the angles 0-90 deg
+
+for theta in range(0,91):  #For each angle 0-90,
+    Vx[0] = V0*np.cos(np.deg2rad(theta)) #Set initial conditions
+    Vy[0] = V0*np.sin(np.deg2rad(theta))
+    X[0] = 0
+    Y[0] = 0
+    
+    for i in range(0, len(flightTime)): #For each step in my timeline (Probably too many)
+        Vx[i+1] = Vx[i] + dt*((-k1*Vx[i])-(k2*Vx[i]*V0)) #Crunch the numbers
+        Vy[i+1] = Vy[i] + dt*((-k1*Vy[i])-(k2*Vy[i]*V0)-g)
+    
+        X[i+1] = X[i] + dt*Vx[i]
+        Y[i+1] = Y[i] + dt*Vy[i]
+
+        if Y[i]<0: #Hey did we hit the ground yet?
+            Xmax = max(X) #Save the maximum range
+            break #Don't wanna calculate below ground. It's not making a crater.
+    MaxX.append(Xmax) #Add the max range to our list
+    Angle.append(theta) #Add our angle to the list
+    
+plt.xlabel("Angle (degrees)") #Make lables and stuff. Who cares? BOOOORING!
+plt.ylabel("Range (m)")
+plt.minorticks_on() #Only nerds use minor ticks... oh wait...
+plt.grid()
+plt.axis([0, 90, 0, 90])
+plt.plot(Angle, MaxX) #Make it so we can actually see stuff
+
+print("Max range of", max(MaxX), "m at", MaxX.index(max(MaxX)), "degrees.") #Just in case you can't read graphs
