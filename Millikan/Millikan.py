@@ -26,8 +26,8 @@ rvals = risefall[:,0] #Col 1 is the rise time
 fvals = risefall[:,1] #Col 2 is the fall time
 rmean = np.mean(rvals) #Mean rise time
 fmean = np.mean(fvals) #Mean fall time
-rsd = np.std(rvals, ddof=1) #Rise standard deviation
-fsd = np.std(fvals, ddof=1) #Fall standard deviation
+rsd = np.std(rvals, ddof=0) #Rise standard deviation
+fsd = np.std(fvals, ddof=0) #Fall standard deviation
 riset = u.ufloat(rmean, rsd) #Mean rise time with error (s)
 fallt = u.ufloat(fmean, fsd) #Mean fall time with error (s)
 #--------------------
